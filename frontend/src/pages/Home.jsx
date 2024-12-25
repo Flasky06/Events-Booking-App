@@ -1,18 +1,15 @@
 import { Link } from "react-router-dom";
+import HeroSection from "../component/layout/HeroSection";
+import EventSectionComponent from "../component/EventSectionComponent";
+import HeaderComponent from "../component/layout/HeaderComponent";
 
 const Home = () => {
   return (
-    <div className="text-center">
-      <h1 className="text-3xl mb-4">Welcome to Our App</h1>
-      <div>
-        <Link
-          to="/login"
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-        >
-          Go to Login / SignUp
-        </Link>
-      </div>
-    </div>
+    <main>
+      <HeaderComponent />
+      <HeroSection />
+      <EventSectionComponent />
+    </main>
   );
 };
 
