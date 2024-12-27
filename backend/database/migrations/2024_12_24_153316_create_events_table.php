@@ -14,21 +14,21 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description')->nullable();
+            $table->string('description');
             $table->string('category');
             $table->timestamp('start_datetime');
             $table->timestamp('end_datetime');
-            $table->decimal('price', 10, 2)->default(0.00);
+            $table->decimal('price', 10);
             $table->enum('location_type', ['physical', 'online']);
             $table->string('link_url')->nullable();
             $table->string('image_url')->nullable();
-            $table->integer('tickets_available')->default(0);
+            $table->integer('tickets_available');
             $table->string('county')->nullable();
             $table->text('location_description')->nullable();
-            $table->unsignedBigInteger('created_by');
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('created_by')->constrained('users');
             $table->timestamps();
         });
+
     }
 
     /**

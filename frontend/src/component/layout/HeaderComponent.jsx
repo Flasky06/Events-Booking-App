@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const HeaderComponent = () => {
-  const [showLogout, setShowLogout] = useState(false); // Toggle for logout option
+  const [showLogout, setShowLogout] = useState(false);
 
   const handleProfileClick = () => {
-    setShowLogout((prev) => !prev); // Toggle the visibility of the logout option
+    setShowLogout((prev) => !prev);
   };
 
   return (

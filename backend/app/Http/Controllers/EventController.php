@@ -8,12 +8,13 @@ use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
-    // Fetch all events
-    public function index()
-    {
-        $events = Event::all();
-        return response()->json($events, 200);
-    }
+  // Fetch paginated events
+public function index()
+{
+    $events = Event::paginate(9);
+    return response()->json($events, 200);
+}
+
 
     // Fetch a single event
     public function show($id)
@@ -29,9 +30,11 @@ class EventController extends Controller
 
     // Create a new event
     public function store(Request $request)
-    {
+{
+    try {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'description' => 'nullable|string|max:255',
             'category' => 'required|string|max:255',
             'start_datetime' => 'required|date',
             'end_datetime' => 'required|date|after:start_datetime',
@@ -40,7 +43,7 @@ class EventController extends Controller
             'link_url' => 'nullable|url',
             'image_url' => 'nullable|url',
             'tickets_available' => 'required|integer|min:0',
-            'county' => 'nullable|string|max:255',
+            'county' => 'nullable|in:Nairobi,Nakuru,Kiambu,Machakos,Mombasa,Kisumu,Nyeri',
             'location_description' => 'nullable|string',
         ]);
 
@@ -49,7 +52,11 @@ class EventController extends Controller
         $event = Event::create($validated);
 
         return response()->json($event, 201);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
     }
+}
+
 
     // Update an event
     public function update(Request $request, $id)
