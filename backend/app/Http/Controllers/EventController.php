@@ -28,8 +28,19 @@ public function index()
         return response()->json($event, 200);
     }
 
+    // Fetch events created by the authenticated user
+    public function myEvents()
+    {
+        $userId = Auth::id();
+
+        $events = Event::where('created_by', $userId)->paginate(6);
+
+        return response()->json($events, 200);
+    }
+
+
     // Create a new event
-    public function store(Request $request)
+public function store(Request $request)
 {
     try {
         $validated = $request->validate([
@@ -41,17 +52,24 @@ public function index()
             'price' => 'required|numeric|min:0',
             'location_type' => 'required|in:physical,online',
             'link_url' => 'nullable|url',
-            'image_url' => 'nullable|url',
+            'image' => 'nullable|file|image|max:2048',
             'tickets_available' => 'required|integer|min:0',
             'county' => 'nullable|in:Nairobi,Nakuru,Kiambu,Machakos,Mombasa,Kisumu,Nyeri',
             'location_description' => 'nullable|string',
         ]);
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('images', 'public');
+            $validated['image_url'] = asset("storage/{$imagePath}");
+        }
 
         $validated['created_by'] = Auth::id();
 
         $event = Event::create($validated);
 
         return response()->json($event, 201);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json(['errors' => $e->errors()], 422);
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);
     }

@@ -11,12 +11,12 @@ const CreateEventPage = () => {
     price: "",
     location_type: "physical",
     link_url: "",
-    image_url: "",
     tickets_available: "",
     county: "",
     location_description: "",
   });
 
+  const [imageFile, setImageFile] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
@@ -25,6 +25,10 @@ const CreateEventPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    setImageFile(e.target.files[0]);
   };
 
   const handleSubmit = (e) => {
@@ -39,13 +43,22 @@ const CreateEventPage = () => {
       return;
     }
 
+    const data = new FormData();
+
+    Object.entries(formData).forEach(([key, value]) => {
+      data.append(key, value);
+    });
+
+    if (imageFile) {
+      data.append("image", imageFile);
+    }
+
     fetch("http://localhost:8000/api/events", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${authToken}`,
       },
-      body: JSON.stringify(formData),
+      body: data,
     })
       .then((response) => {
         if (!response.ok) {
@@ -64,11 +77,11 @@ const CreateEventPage = () => {
           price: "",
           location_type: "physical",
           link_url: "",
-          image_url: "",
           tickets_available: "",
           county: "",
           location_description: "",
         });
+        setImageFile(null);
 
         // Redirect to the homepage after a delay
         setTimeout(() => navigate("/"), 2000);
@@ -97,7 +110,6 @@ const CreateEventPage = () => {
             required
           />
         </div>
-
         <div>
           <label className="block font-medium">Event Description</label>
           <textarea
@@ -175,12 +187,11 @@ const CreateEventPage = () => {
           />
         </div>
         <div>
-          <label className="block font-medium">Image URL</label>
+          <label className="block font-medium">Image</label>
           <input
-            type="url"
-            name="image_url"
-            value={formData.image_url}
-            onChange={handleChange}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
             className="w-full border rounded px-4 py-2"
           />
         </div>
