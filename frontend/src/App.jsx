@@ -6,10 +6,12 @@ import EventPage from "./pages/EventPage";
 import CreateEventPage from "./pages/CreateEventPage";
 import ProtectedRoute from "./component/ProtectedRoute";
 import ProfilePage from "./pages/ProfilePage";
+import HeaderComponent from "./component/layout/HeaderComponent";
 
 function App() {
   return (
     <BrowserRouter>
+      <HeaderComponent />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUpPage />} />

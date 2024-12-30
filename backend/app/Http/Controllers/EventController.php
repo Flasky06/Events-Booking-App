@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Auth;
 class EventController extends Controller
 {
   // Fetch paginated events
+
+
 public function index()
 {
-    $events = Event::paginate(9);
+    $events = Event::with('user')->paginate(9);
     return response()->json($events, 200);
 }
 
@@ -19,7 +21,7 @@ public function index()
     // Fetch a single event
     public function show($id)
     {
-        $event = Event::find($id);
+        $event = Event::with('user')->find($id);
 
         if (!$event) {
             return response()->json(['message' => 'Event not found'], 404);

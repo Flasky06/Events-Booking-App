@@ -26,8 +26,10 @@ class Event extends Model
     ];
 
     // Define relationships
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
+
+    public function user()
+{
+    return $this->belongsTo(User::class, 'created_by');
+}
+
 }

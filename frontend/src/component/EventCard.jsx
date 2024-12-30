@@ -14,8 +14,8 @@ const EventCard = ({ event }) => {
               className="mt-4 w-full h-40 object-cover rounded-lg"
             />
             {/* Top-left overlay for location type */}
-            <div className="absolute top-2 left-2 bg-black text-white px-3 py-1 rounded-lg opacity-75">
-              {event.location_type || "Unknown"}
+            <div className="absolute top-2 left-2 bg-black  text-white font-bold px-2 py-1 rounded-lg opacity-75 text-xs">
+              {event.location_type}
             </div>
           </div>
         ) : (

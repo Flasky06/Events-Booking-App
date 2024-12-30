@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import HeaderComponent from "../component/layout/HeaderComponent";
 import MyPostsComponent from "../component/MyPostsComponent";
 import UserSettingsComponent from "../component/UserSettingsComponent";
 
@@ -8,7 +7,6 @@ const ProfilePage = () => {
 
   return (
     <div>
-      <HeaderComponent />
       <div className="container mx-auto py-8">
         <h2 className="text-3xl mb-6 text-center">Profile Page</h2>
         {/* Tabs Navigation */}
