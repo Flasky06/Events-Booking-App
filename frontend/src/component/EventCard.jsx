@@ -4,14 +4,14 @@ import PropTypes from "prop-types";
 
 const EventCard = ({ event }) => {
   return (
-    <div key={event.id} className="event-card border p-4 rounded-lg shadow-lg">
+    <div key={event.id} className="lg:border lg:p-2 lg:rounded-lg lg:shadow-lg">
       <Link to={`/events/${event.id}`}>
         {event.image_url ? (
           <div className="relative">
             <img
               src={event.image_url}
               alt={`Image for ${event.title}`}
-              className="mt-4 w-full h-40 object-cover rounded-lg"
+              className="lg:mt-4 w-full lg:h-40 object-cover lg:rounded-lg"
             />
             {/* Top-left overlay for location type */}
             <div className="absolute top-2 left-2 bg-black  text-white font-bold px-2 py-1 rounded-lg opacity-75 text-xs">
@@ -23,23 +23,14 @@ const EventCard = ({ event }) => {
             <span className="text-gray-500">No Image Available</span>
           </div>
         )}
-        <div className="flex flex-row space-x-14 items-center mt-2">
-          <p className="text-sm text-green-700 bg-green-200 px-2 py-1 rounded-full">
-            Ksh {event.price || "Free"}
-          </p>
-          <p className="text-gray-500 text-sm bg-gray-200 rounded-full px-2 py-1">
-            {event.category || "General"}
-          </p>
-        </div>
-        <div className="text-sm text-slate-850">
-          {event.start_datetime || "Date not specified"}
-        </div>
         <h4 className="text-slate-950 font-semibold mt-2">
           {event.title || "Untitled Event"}
         </h4>
-        <p className="text-sm font-extralight text-gray-700 text-center w-full">
-          Tritva Technologies
+        <p className="text-gray-500 text-sm rounded-full  py-1">
+          {event.category}
         </p>
+        <div className="text-sm text-slate-850">{event.county}</div>
+        <div className="text-sm text-slate-850">{event.start_datetime}</div>
       </Link>
     </div>
   );

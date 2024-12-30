@@ -7,11 +7,15 @@ import CreateEventPage from "./pages/CreateEventPage";
 import ProtectedRoute from "./component/ProtectedRoute";
 import ProfilePage from "./pages/ProfilePage";
 import HeaderComponent from "./component/layout/HeaderComponent";
+import ConditionalyShowNavbar from "./component/layout/ConditionalyShowNavbar";
 
 function App() {
   return (
     <BrowserRouter>
-      <HeaderComponent />
+      <ConditionalyShowNavbar>
+        {" "}
+        <HeaderComponent />
+      </ConditionalyShowNavbar>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUpPage />} />

@@ -3,8 +3,8 @@ import EventSectionComponent from "../component/EventSectionComponent";
 
 const Home = () => {
   return (
-    <main>
-      <HeroSection />
+    <main className="lg:mt-20">
+      {/* <HeroSection /> */}
       <EventSectionComponent />
     </main>
   );

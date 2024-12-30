@@ -49,9 +49,9 @@ const EventSectionComponent = () => {
   }
 
   return (
-    <div className="event-section container max-w-6xl mx-auto py-8">
-      <h2 className="text-3xl mb-4 text-center">Upcoming Events</h2>
-      <div className="events-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="event-section px-2 container  lg:px-0 lg:max-w-6xl lg:mx-auto lg:py-8 ">
+      <h2 className="text-3xl my-4 text-center font-bold">Upcoming Events</h2>
+      <div className="events-list grid grid-cols-2 gap-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-10">
         {events.map((event) => (
           <EventCard key={event.id} event={event} />
         ))}

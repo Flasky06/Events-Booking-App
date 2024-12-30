@@ -12,10 +12,6 @@ const EventDetailCard = () => {
     fetch(`http://127.0.0.1:8000/api/events/${id}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log("data", data);
-        console.log("user", data.user);
-        console.log("user", data.user.username);
-
         setEvent(data); // Store the fetched event details
         setLoading(false); // Update loading state after fetching
       })
@@ -25,6 +21,8 @@ const EventDetailCard = () => {
         setLoading(false); // Update loading state
       });
   }, [id]); // The effect runs again whenever the event ID changes
+
+  const formatDate = (date) => new Date(date).toLocaleString();
 
   if (loading) {
     return (
@@ -40,30 +38,30 @@ const EventDetailCard = () => {
     return (
       <div className="text-center py-8 text-red-500">
         <h2 className="text-xl font-semibold">{error}</h2>
+        <p>Please check your internet connection and try again.</p>
       </div>
     );
   }
 
   return (
-    <div className="event-details container max-w-7xl mx-auto py-12 px-4">
+    <div className="container p-1 lg:max-w-7xl lg:mx-auto lg:py-8 lg:px-4">
       {event && (
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Event Image and Location */}
+        <div className="bg-white lg:rounded-lg lg:shadow-sm lg:overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-8">
             {event.image_url && (
-              <div className="relative h-96 my-auto ml-2 rounded-l-lg">
+              <div className="relative h-96 my-auto lg:ml-2 lg:rounded-l-lg">
                 <img
                   src={event.image_url}
                   alt={event.title}
-                  className="w-full h-96 object-cover rounded-l-lg"
+                  className="w-full h-96 object-cover lg:rounded-l-lg"
                 />
-                <div className="absolute top-2 left-2 bg-black  text-white text-xs font-bold px-3 py-1 rounded-lg opacity-75">
+                <div className="absolute top-2 left-2 bg-black text-white text-xs font-bold px-3 py-1 rounded-lg opacity-75">
                   {event.location_type}
                 </div>
               </div>
             )}
 
-            <div className="p-6 flex flex-col justify-between">
+            <div className="p-2 flex flex-col justify-between lg:p-6">
               <div>
                 <h2 className="text-3xl font-bold mb-4">{event.title}</h2>
                 <div className="flex flex-wrap space-x-4 items-center mb-4">
@@ -83,17 +81,16 @@ const EventDetailCard = () => {
                 </h3>
                 <p className="text-sm text-gray-600">{event.user.username}</p>
               </div>
+
               <div className="mb-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">
                   Schedule
                 </h3>
                 <p className="text-sm text-gray-600">
-                  <strong>Start:</strong>{" "}
-                  {new Date(event.start_datetime).toLocaleString()}
+                  <strong>Start:</strong> {formatDate(event.start_datetime)}
                 </p>
                 <p className="text-sm text-gray-600">
-                  <strong>End:</strong>{" "}
-                  {new Date(event.end_datetime).toLocaleString()}
+                  <strong>End:</strong> {formatDate(event.end_datetime)}
                 </p>
               </div>
 

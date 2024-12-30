@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CreateEventPage = () => {
@@ -17,8 +17,10 @@ const CreateEventPage = () => {
   });
 
   const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -28,18 +30,59 @@ const CreateEventPage = () => {
   };
 
   const handleFileChange = (e) => {
-    setImageFile(e.target.files[0]);
+    const file = e.target.files[0];
+    setImageFile(file);
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const validateForm = () => {
+    if (
+      !formData.title ||
+      !formData.category ||
+      !formData.start_datetime ||
+      !formData.end_datetime ||
+      !formData.price ||
+      !formData.tickets_available
+    ) {
+      setError("Please fill out all required fields.");
+      return false;
+    }
+
+    if (
+      parseFloat(formData.price) <= 0 ||
+      parseInt(formData.tickets_available) <= 0
+    ) {
+      setError("Price and tickets available must be positive numbers.");
+      return false;
+    }
+
+    if (new Date(formData.start_datetime) >= new Date(formData.end_datetime)) {
+      setError("End date must be after the start date.");
+      return false;
+    }
+
+    setError(null);
+    return true;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+    setIsLoading(true);
+
+    if (!validateForm()) {
+      setIsLoading(false);
+      return;
+    }
 
     const authToken = sessionStorage.getItem("authToken");
 
     if (!authToken) {
       setError("Authorization token is missing. Please log in.");
+      setIsLoading(false);
       return;
     }
 
@@ -66,7 +109,7 @@ const CreateEventPage = () => {
         }
         return response.json();
       })
-      .then((data) => {
+      .then(() => {
         setSuccess("Event created successfully!");
         setFormData({
           title: "",
@@ -82,27 +125,36 @@ const CreateEventPage = () => {
           location_description: "",
         });
         setImageFile(null);
-
-        // Redirect to the homepage after a delay
-        setTimeout(() => navigate("/"), 2000);
+        setImagePreview(null);
+        setIsLoading(false);
       })
-      .catch((error) => setError(error.message));
+      .catch((error) => {
+        setError(error.message);
+        setIsLoading(false);
+      });
   };
 
   const handleCancel = () => {
     navigate("/");
   };
 
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => navigate("/"), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [success, navigate]);
+
   return (
-    <div className="container mx-auto py-8">
+    <div className="container lg:max-w-6xl lg:mx-auto lg:py-8">
       <h2 className="text-3xl mb-6 text-center">Create a New Event</h2>
       {error && <p className="text-red-500 text-center">{error}</p>}
       {success && <p className="text-green-500 text-center">{success}</p>}
       <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-4">
         <div>
-          <label className="block font-medium">Title</label>
           <input
             type="text"
+            placeholder="Event Title"
             name="title"
             value={formData.title}
             onChange={handleChange}
@@ -111,18 +163,18 @@ const CreateEventPage = () => {
           />
         </div>
         <div>
-          <label className="block font-medium">Event Description</label>
           <textarea
             name="description"
+            placeholder="Event Description"
             value={formData.description}
             onChange={handleChange}
             className="w-full border rounded px-4 py-2"
           ></textarea>
         </div>
         <div>
-          <label className="block font-medium">Category</label>
           <input
             type="text"
+            placeholder="Event Category"
             name="category"
             value={formData.category}
             onChange={handleChange}
@@ -131,9 +183,9 @@ const CreateEventPage = () => {
           />
         </div>
         <div>
-          <label className="block font-medium">Start Date & Time</label>
           <input
             type="datetime-local"
+            placeholder="Start Date & Time"
             name="start_datetime"
             value={formData.start_datetime}
             onChange={handleChange}
@@ -142,9 +194,9 @@ const CreateEventPage = () => {
           />
         </div>
         <div>
-          <label className="block font-medium">End Date & Time</label>
           <input
             type="datetime-local"
+            placeholder="End Date & Time"
             name="end_datetime"
             value={formData.end_datetime}
             onChange={handleChange}
@@ -153,9 +205,9 @@ const CreateEventPage = () => {
           />
         </div>
         <div>
-          <label className="block font-medium">Price</label>
           <input
             type="number"
+            placeholder="Price"
             name="price"
             value={formData.price}
             onChange={handleChange}
@@ -164,7 +216,6 @@ const CreateEventPage = () => {
           />
         </div>
         <div>
-          <label className="block font-medium">Location Type</label>
           <select
             name="location_type"
             value={formData.location_type}
@@ -177,9 +228,9 @@ const CreateEventPage = () => {
           </select>
         </div>
         <div>
-          <label className="block font-medium">Link URL (if online)</label>
           <input
             type="url"
+            placeholder="Link URL (if online)"
             name="link_url"
             value={formData.link_url}
             onChange={handleChange}
@@ -187,8 +238,15 @@ const CreateEventPage = () => {
           />
         </div>
         <div>
-          <label className="block font-medium">Image</label>
+          {imagePreview && (
+            <img
+              src={imagePreview}
+              alt="Image preview"
+              className="w-32 h-32 object-cover mb-4"
+            />
+          )}
           <input
+            placeholder="Upload Image"
             type="file"
             accept="image/*"
             onChange={handleFileChange}
@@ -196,9 +254,9 @@ const CreateEventPage = () => {
           />
         </div>
         <div>
-          <label className="block font-medium">Tickets Available</label>
           <input
             type="number"
+            placeholder="Tickets Available"
             name="tickets_available"
             value={formData.tickets_available}
             onChange={handleChange}
@@ -207,7 +265,6 @@ const CreateEventPage = () => {
           />
         </div>
         <div>
-          <label className="block font-medium">County</label>
           <select
             name="county"
             value={formData.county}
@@ -225,9 +282,9 @@ const CreateEventPage = () => {
           </select>
         </div>
         <div>
-          <label className="block font-medium">Location Description</label>
           <textarea
             name="location_description"
+            placeholder="Location Description"
             value={formData.location_description}
             onChange={handleChange}
             className="w-full border rounded px-4 py-2"
@@ -244,8 +301,9 @@ const CreateEventPage = () => {
           <button
             type="submit"
             className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+            disabled={isLoading}
           >
-            Create Event
+            {isLoading ? "Creating..." : "Create Event"}
           </button>
         </div>
       </form>
